@@ -21,7 +21,7 @@
 (defn- name-schema-error?
   [response]
   (str/starts-with? (or (get-in response [:errors :name]) "")
-                    "Value does not match schema: "))
+                    "snippet names cannot include"))
 
 ;; GET /api/native-query-snippet
 (deftest list-snippets-api-test

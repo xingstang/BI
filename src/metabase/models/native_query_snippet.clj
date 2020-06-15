@@ -3,7 +3,9 @@
              [interface :as i]
              [permissions :as perms]]
             [metabase.util :as u]
-            [metabase.util.i18n :refer [tru]]
+            [metabase.util
+             [i18n :refer [deferred-tru tru]]
+             [schema :as su]]
             [schema.core :as s]
             [toucan
              [db :as db]
@@ -45,7 +47,9 @@
 
 (def NativeQuerySnippetName
   "Schema checking that snippet names do not include \"}\" or start with spaces."
-  (s/pred (every-pred
-           string?
-           (complement #(boolean (re-find #"^\s+" %)))
-           (complement #(boolean (re-find #"}" %))))))
+  (su/with-api-error-message
+   (s/pred (every-pred
+            string?
+            (complement #(boolean (re-find #"^\s+" %)))
+            (complement #(boolean (re-find #"}" %)))))
+   (deferred-tru "snippet names cannot include '}' or start with spaces")))
